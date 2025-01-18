@@ -1,0 +1,9 @@
+version: '3.1'
+
+services:
+  zoo1:
+    image: zookeeper
+    restart: always
+    hostname: test-zookeeper
+    ports:
+      - 2181:2181

@@ -1,0 +1,28 @@
+
+## What is Apache ZooKeeper?
+
+Apache ZooKeeper runs Paxos algorithm, which has high consistency (by sacrificing some availability).
+
+It is a popular tool for name lookup, lead/master node election, membership management, etc.
+
+Here we provide two examples:
+- lead/master node election: `leader_election.py`
+- membership management: `consistent_hashing.py` creates a consistent hashing (which is used by many distributed systems)
+
+The code means to be as simple as possible, instead of being perfect.
+
+## How to Run Code
+Before you start, please make sure that you have docker installed.
+
+
+Open 2 terminal tabs
+- in the first tab, start the container of Apache Zookeeper
+```
+$ docker compose up
+```
+- in the second tab, start the virtual envionment, and run the example code
+```
+$ bash start_venv.sh
+$ python3 consistent_hashing.py
+$ python3 leader_election.py
+```
