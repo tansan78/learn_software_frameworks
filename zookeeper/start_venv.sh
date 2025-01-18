@@ -1,6 +1,5 @@
 #!/bin/bash
 
-DIRECTORY=venv
 if [ -d venv ]; then
     echo 'Virtual Environment at ./venv already exists'
 else
