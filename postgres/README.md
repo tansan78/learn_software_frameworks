@@ -4,7 +4,7 @@
 $ docker compose up
 ```
 
-- step 2: from browser, access [http://localhost:8080/], login using
+- step 2: from browser, access [http://localhost:8080/](http://localhost:8080/), login using
   - user name: name@example.com
   - password: admin
 
