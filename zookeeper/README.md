@@ -1,7 +1,7 @@
 
 ## What is Apache ZooKeeper?
 
-Apache ZooKeeper runs Paxos algorithm, which has high consistency (by sacrificing some availability).
+[Apache ZooKeeper](https://zookeeper.apache.org/) runs Paxos algorithm, which has high consistency (by sacrificing some availability).
 
 It is a popular tool for name lookup, lead/master node election, membership management, etc.
 
@@ -10,6 +10,8 @@ Here we provide two examples:
 - membership management: `consistent_hashing.py` creates a consistent hashing (which is used by many distributed systems)
 
 The code means to be as simple as possible, instead of being perfect.
+
+The code uses [Kazoo](https://kazoo.readthedocs.io/en/latest/index.html#) which is a Python client for ZooKeeper.
 
 ## How to Run Code
 Before you start, please make sure that you have docker installed.
