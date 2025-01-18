@@ -7,7 +7,7 @@ It is a popular tool for name lookup, lead/master node election, membership mana
 
 Here we provide two examples:
 - lead/master node election: `leader_election.py`
-- membership management: `consistent_hashing.py` creates a consistent hashing (which is used by many distributed systems)
+- [consistent hashing](https://en.wikipedia.org/wiki/Consistent_hashing): `consistent_hashing.py`
 
 The code means to be as simple as possible, instead of being perfect.
 
