@@ -32,6 +32,7 @@ def server_process(process_id):
         logging.warning(f'Hash collision; might be caused duplicated processed id {process_id}; quitting...')
         return
 
+    # Listen to node changes, and update leader/master
     _leader_id_per_process = -1
     @zk.ChildrenWatch(path=DEFAULT_PATH)
     def update_leader(children):
@@ -53,13 +54,14 @@ def server_process(process_id):
         
         logging.info(f'PROCESS {process_id}: find out the new leader is the process: {_leader_id_per_process}')
 
+    # loop to keep the process alive
     while True:
         time.sleep(SLEEPING_INTERVAL)
         logging.info(f'PROCESS {process_id}: alive and the leader is {_leader_id_per_process}')
 
 
 def main():
-    # start 2 processes initially
+    # start 2 worker processes initially
     logging.info('Starting processes...')
     processes = {}
     for i in range(2):
@@ -67,6 +69,7 @@ def main():
         processes[i].start()
     
 
+    # randomly kill or add worker process, to test the leader election
     logging.info('MAIN: Starting loop...')
     while True:
         time.sleep(SLEEPING_INTERVAL)
