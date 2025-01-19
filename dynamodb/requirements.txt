@@ -1,1 +1,4 @@
 awscli
+
+boto3
+pandas
