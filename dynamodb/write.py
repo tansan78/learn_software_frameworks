@@ -52,9 +52,8 @@ def batch_write_table():
     # selected_df = df.sample(n=100)
     added_customer_id = set()
     added_order_id = set()
-    selected_df = df
     with get_table().batch_writer() as writer:
-        for _, row in selected_df.iterrows():
+        for _, row in df.iterrows():
             # logging.info(f'Write record for user id: {row['customer_id']}')
             if row['customer_id'] not in added_customer_id:
                 writer.put_item(Item=create_customer_item(
