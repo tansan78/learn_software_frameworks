@@ -1,0 +1,3 @@
+elasticsearch
+sentence-transformers==2.7.0
+pandas
