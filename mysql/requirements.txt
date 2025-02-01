@@ -1,0 +1,6 @@
+pandas
+# psycopg is for postgres
+# psycopg[binary]
+
+PyMySQL
+PyMySQL[rsa]

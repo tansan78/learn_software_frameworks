@@ -2,6 +2,7 @@
 *.zip
 docker/
 dynamodb_local_server/
+dbdata/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
