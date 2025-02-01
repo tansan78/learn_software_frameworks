@@ -37,18 +37,24 @@ Key points:
 
 
 
+## How to use?
 
-
-- step 1:
+- step 1: in terminal
 ```
 $ docker compose up
 ```
+- step 2: in another tab of terminal
+```
+$ bash start_env.sh
+$ python3 atomic_update.py
+```
 
-- step 2: from browser, access [http://localhost:8080/](http://localhost:8080/), login using
+### for postgres
+- from browser, access [http://localhost:8080/](http://localhost:8080/), login using
   - user name: name@example.com
   - password: admin
 
-- step 3: click to start a new connection, with
+- click to start a new connection, with
   - server/host: postgres
   - user: postgres
   - password: admin
