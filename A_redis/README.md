@@ -69,13 +69,7 @@ $ python3 challenge_nearby_friends.py
 
 It is possible to start a redis command line client
 ```
-# find the container name
-$ docker ps
-CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                    NAMES
-9b72eaa031bf   redis     "docker-entrypoint.s…"   17 minutes ago   Up 17 minutes   0.0.0.0:6379->6379/tcp   a_redis-redis-1
-
-# replace the container name
-$ docker exec -it 9b72eaa031bf bash
+$ docker exec -it redis bash
 
 # Now you are in the redis container and start the redis cli and whatever command you want
 $ rediscli

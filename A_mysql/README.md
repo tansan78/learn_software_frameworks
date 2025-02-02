@@ -42,12 +42,7 @@ $ python3 challenge_coupons.py
 
 It is possible to check the table inside the docker container too:
 ```
-$ docker ps
-CONTAINER ID   IMAGE      COMMAND                  CREATED          STATUS          PORTS                               NAMES
-5120d88e2a8b   mysql      "docker-entrypoint.s…"   46 minutes ago   Up 46 minutes   0.0.0.0:3306->3306/tcp, 33060/tcp   postgres-mysql-1
-
-# find the container ID from above and replace the container ID below
-$ docker exec -it 5120d88e2a8b  bash
+$ docker exec -it mysql  bash
 
 # Now you are inside the container
 $ mysql --password=example
