@@ -1,17 +1,75 @@
+## Introduction to MySQL
+MySQL is a mature, relational database management system (RDBMS) known for its robustness, widespread adoption, and strong adherence to SQL standards. It is a popular choice among engineers for managing structured data due to its ACID-compliant transactions, well-defined schema, and powerful query capabilities.
+
+### Strengths
+- **Structured Data and Relationships**
+- **ACID Compliance**: MySQL provides full ACID (Atomicity, Consistency, Isolation, Durability) properties, ensuring reliable transactions and data integrity, which is critical for financial, e-commerce, and other mission-critical applications
+- **Mature Ecosystem and Tooling**
+- **Standardized Query Language**
+
+### Weaknesses Compared to NoSQL Databases
+- **Scalability Challenges**: While MySQL can scale vertically (by adding more resources to a single server), horizontal scaling (distributing data across multiple servers) can be more challenging compared to many NoSQL solutions
+- **Flexibility with Schema**: MySQL enforces a rigid schema, which can limit flexibility when dealing with rapidly changing data models or unstructured dat
+- **Handling Big Data and High Write Loads**: For applications that require high throughput for write-heavy workloads or need to handle massive amounts of unstructured data, NoSQL databases like Cassandra or MongoDB may offer better performance
+- **Complexity in Sharding**: Implementing sharding or distributed architectures in MySQL can be complex and may require additional middleware or significant architectural overhead
+
+
+MySQL offers a reliable, well-understood platform for managing structured data with strong consistency guarantees and robust transactional support. However, when dealing with applications that require dynamic schema evolution, massive horizontal scalability, or high-velocity data ingestion, NoSQL databases might provide a more natural fit.
+
+## The Code Challenges
+
+### Coupon System for Doordash or Uber Eats
+Assume you are designing a coupon system for Doordash or Uber Eats. 
+- The restaurant owners can create promotions, and in each promotion, there is a maxiumum number of allowed coupons;
+- The users can browse promotions, and sign up for the promotions. The sign-up gives coupons to users. A user can sign up once for one promotion;
+- A user can browse her/his available coupons.
+
+Sample solution: [challenge_coupons.py](./challenge_coupons.py)
+
+Before starting, please read the [How to Use section](#how-to-use), and the [Python SQL client documentation section](#python-sql-client-documentation).
+
+## How to use?
+
+1. in a terminal tab, start the MySQL docker server using:
+```
+$ docker compose up
+```
+2. in another tab of terminal, start virtual environment and run the code
+```
+$ bash start_env.sh
+$ python3 challenge_coupons.py
+```
+
+It is possible to check the table inside the docker container too:
+```
+$ docker ps
+CONTAINER ID   IMAGE      COMMAND                  CREATED          STATUS          PORTS                               NAMES
+5120d88e2a8b   mysql      "docker-entrypoint.s…"   46 minutes ago   Up 46 minutes   0.0.0.0:3306->3306/tcp, 33060/tcp   postgres-mysql-1
+
+# find the container ID from above and replace the container ID below
+$ docker exec -it 5120d88e2a8b  bash
+
+# Now you are inside the container
+$ mysql --password=example
+# Now you have an interactive SQL client
+mysql> SELECT 1;
+```
+
 
 ## Resources
 
-### Python SQL client:
-- [PyMySQL](https://pymysql.readthedocs.io/en/latest/modules/connections.html) for MySQL; very simple; not very useful
-- [psycopg 3](https://www.psycopg.org/psycopg3/docs/basic/usage.html) for PostGres; detailed
+### Python SQL client documentation
+- [PyMySQL](https://pymysql.readthedocs.io/en/latest/user/examples.html) is used here; however, the documentation is minimum and not very useful
+- [psycopg 3](https://www.psycopg.org/psycopg3/docs/basic/usage.html) for PostGres; the instruction is very detailed and you can use for reference.
 
 Key points:
-- by default, connection does not commit automatically (though we can change this behavior by setting `autocommit=True`); we have to call `conn.commit()` to make it visible to others (or, persistent in storage), or `conn.rollback()` to rollback;
+- by default, connection does not commit automatically (though we can change this behavior by setting `autocommit=True`); we have to call `conn.commit()` to make it visible to others (or, persistent in storage), or call `conn.rollback()` to rollback;
 - any pending operations before `conn.commit()` are handled as one transaction;
 
 A typical usage:
 ```
 conn = pymysql.connect(host='localhost',...)
+
 with conn.cursor() as cursor:
   # the following SQL1 and SQL2 are executed as one transaction
   try:
@@ -22,42 +80,33 @@ with conn.cursor() as cursor:
     conn.rollback()
 ```
 
+### Key APIs
 
-### Excellent introduction about indexing
+#### Connection Object
+- `close()`: Close the connection now
+- `commit()`: Commit any pending transaction to the database.
+- `rollback()`: causes the database to roll back to the start of any pending transaction. Closing a connection without committing the changes first will cause an implicit rollback to be performed.
+- `cursor()`: Return a new Cursor Object using the connection.
+
+#### Cursor Objects
+- `execute(query [, params])`
+  - `query`: The query to execute.
+  - `params` (Sequence or Mapping): The parameters to pass to the query, if any
+- `fetchone()`: Return the next record from the current recordset, in the format of dictionary.
+- `fetchall()`: Return all the remaining records from the current recordset, in the format of a list of dictionaries.
+
+### [Optional] Optimize the use of indexing
 [Use the Index Luke](https://use-the-index-luke.com/).
 
-Key points:
-- indexing comes with the tax of maintaining indices during update operations; do not over index;
-- there are two steps for execution: index reads and table reads;
-- do not use index on fields with sparse/broad values (like department ID); using index on broad values alone leads to many table reads (and potentially many index reads);
-- do not apply functions (like UPPER, or time operations) on indexed fields in WHERE condition, because it effectively disables indexing. We may apply the function (a.k.a function-based index) when creating the index;
-- if there are multi indexed fields involved in WHERE conditions, only one of them can be used. It might be helpful (not always true) to put the most specific/selective index as the first (or, left most) condition in the WHERE clause. We may use concatinated index which uses multi fields as one index;
-- LIKE clause disables indexing; some DB may use prefix of the wildcard string for index searching
+- **Maintenance Overhead**: Indexes incur an update cost because they must be maintained during insert, update, or delete operations. Avoid over-indexing to prevent unnecessary performance overhead.
 
+- **Execution Process**: Query execution involving indexes generally occurs in two phases: first, <ins>index reads</ins> are performed to locate the relevant entries, and then <ins>table reads</ins> retrieve the actual row data.
 
+- **Selective Indexing**: Avoid indexing columns with sparse or broad values (e.g., department IDs). Indexes on such fields tend to result in many <ins>table reads</ins> and, in some cases, numerous <ins>index reads</ins>, diminishing their benefit.
 
+- **Function Usage in WHERE Clauses**: Do not apply functions (such as UPPER or date/time operations) on indexed columns within the WHERE clause, as this will disable the index. If function-based indexing is required, create a dedicated function-based index.
 
-## How to use?
+- **Multiple Indexes in WHERE Clauses**: When multiple indexed fields are used in the WHERE clause, typically only one index is chosen by the query optimizer. As a best practice, consider placing the most specific or selective condition first (or leftmost) in the clause. Alternatively, a concatenated index that combines multiple fields can sometimes be more effective.
 
-- step 1: in terminal
-```
-$ docker compose up
-```
-- step 2: in another tab of terminal
-```
-$ bash start_env.sh
-$ python3 atomic_update.py
-```
+- **Impact of LIKE Clauses**: The use of the LIKE clause, particularly with wildcards at the beginning of the search term, can disable the effectiveness of indexes. Some databases might still use the index if the wildcard is at the end (a prefix search), but generally, pattern matching can hinder index utilization.
 
-### for postgres
-- from browser, access [http://localhost:8080/](http://localhost:8080/), login using
-  - user name: name@example.com
-  - password: admin
-
-- click to start a new connection, with
-  - server/host: postgres
-  - user: postgres
-  - password: admin
-
-
-Now, feel free to create tables, insert data, etc
