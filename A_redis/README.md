@@ -41,7 +41,7 @@ Typical use case: Leaderboards, ranking systems, or time-based event ordering.
 - **Pub/Sub (Publish/Subscribe)**: Unlike some messaging systems, Redis Pub/Sub does not store messages. If a subscriber is not actively listening at the time of publication, it will miss the message. 
 
 ## Code Challenges
-Before starting, please read the [How to Use section](#how-ti-use)
+Before starting, please read the [How to Use section](#how-ti-use) and [Redis Client API](#redis-client-api).
 
 ### Nearby friends
 Design a system to track the locations of friends in real-time (the latency of <1 second)
@@ -80,7 +80,12 @@ $ python3 challenge_nearby_friends.py
 
 
 ### Sorted Set
-
+- `zadd(name, mapping, nx=False, xx=False, ch=False, incr=False, gt=False, lt=False)`: Set any number of element-name, score pairs to the key name. Pairs are specified as a dict of element-names keys to score values.
+- `zrem(name, *values)`: Remove member values from sorted set name;
+- `zrank(name, value, withscore=False)`: Returns a 0-based value indicating the rank of value in sorted set name
+- `zrevrank(name, value, withscore=False)`: Returns a 0-based value indicating the descending rank of value in sorted set name;
+- `zrange(name, start, end, desc=False, withscores=False, score_cast_func=<class 'float'>, byscore=False, bylex=False, offset=None, num=None)`: Return a range of values from sorted set name between start and end sorted in ascending order;
+- `zrevrange(name, start, end, withscores=False, score_cast_func=<class 'float'>)`: Return a range of values from sorted set name between start and end sorted in descending order.
 
 ### PubSub
 [official documentation](https://redis-py.readthedocs.io/en/stable/advanced_features.html#publish-subscribe)
