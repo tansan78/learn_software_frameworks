@@ -67,6 +67,21 @@ $ bash start_venv.sh
 $ python3 challenge_nearby_friends.py
 ```
 
+It is possible to start a redis command line client
+```
+# find the container name
+$ docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                    NAMES
+9b72eaa031bf   redis     "docker-entrypoint.s…"   17 minutes ago   Up 17 minutes   0.0.0.0:6379->6379/tcp   a_redis-redis-1
+
+# replace the container name
+$ docker exec -it 9b72eaa031bf bash
+
+# Now you are in the redis container and start the redis cli and whatever command you want
+$ rediscli
+> hgetall '00000_friends_locations'
+```
+
 ## Redis Client API
 
 ### List
