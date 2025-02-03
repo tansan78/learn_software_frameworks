@@ -8,7 +8,7 @@ In system design interviews, you confidently discuss sophisticated frameworks li
 
 Key features include:
 - **Local Environment Setup**: Run common databases or software frameworks directly on your computer, which saves your trouble for cloud setup;
-- **Minimal Code Challenges**: Tackle real system design problems with code challenges intentionally kept under 200 lines of code.
+- **Minimal Code Challenges**: Tackle real system design problems with code challenges intentionally kept under 200 lines of code. You will need to spend quite time to understand the frameworks and their clients; however, this is exactly the process to deepen your understanding.
 
 Each directory has a README to instruct for the setup and the code challenges.
 
