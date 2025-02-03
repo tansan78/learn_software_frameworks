@@ -4,6 +4,19 @@ This system is to get the friend's locations for a user in real-time.
 You need to define the functions to
 - send/publish update for the new location of a user: publish_user_location()
 - receive/subscribe to the location update of the friends of a user: subscribe_friends_update()
+
+Upon success run, you should see logging like the following
+
+INFO:root:MAIN: verify location of user 00004 ...
+INFO:root:User 00004's location is verified successfully with friend 00003
+INFO:root:User 00004's location is verified successfully with friend 00009
+INFO:root:User 00004's location is verified successfully with friend 00005
+INFO:root:User 00004's location is verified successfully with friend 00006
+INFO:root:User 00004's location is verified successfully with friend 00007
+INFO:root:User 00004's location is verified successfully with friend 00008
+INFO:root:MAIN: verify location of user 00000 ...
+INFO:root:User 00000's location is verified successfully with friend 00001
+INFO:root:User 00000's location is verified successfully with friend 00002
 """
 from typing import List, Dict, Tuple
 import logging

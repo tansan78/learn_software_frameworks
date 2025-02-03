@@ -4,6 +4,9 @@ docker/
 dynamodb_local_server/
 dbdata/
 
+# test data for dynamoDB
+top100.txt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
