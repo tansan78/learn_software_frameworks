@@ -23,8 +23,7 @@ Overall, DynamoDB is best suited for applications that require high performance 
 ### URL Shortener
 Given a full URL, encode it as a shortened URL; and given a shortened URL, return the original full URL.
 
-The sample data is from 
-https://github.com/ada-url/url-various-datasets/blob/main/top100/top100.txt
+Coding template: [challenge_url_shortener.py]('./challenge_url_shortener.py') and you only need to implement specific functions. You can find my solution at [solutions/challenge_url_shortener.py]('./solutions/challenge_url_shortener.py')
 
 
 ### ECommerce
@@ -34,6 +33,8 @@ The query pattern:
 - given a customer id, return all the orders made by this customer
 - given a customer id and a time frame, return all the orders made within the specified timeframe by this customer
 - given a customer id and a matching word, return all the orders by this customer, for which product names contain the matching word
+
+Coding template: [challenge_ecommerce.py]('./challenge_ecommerce.py') and you only need to implement specific functions. You can find my solution at [solutions/challenge_ecommerce.py]('./solutions/challenge_ecommerce.py')
 
 ## How to Run?
 

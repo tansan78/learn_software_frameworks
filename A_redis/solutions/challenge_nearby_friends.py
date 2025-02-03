@@ -163,17 +163,33 @@ def get_user_id_from_channel_name(channel_name: str):
 
 
 def publish_user_location(rclient, user_id: str, lat: float, lng: float):
-    """
-    TO BE IMPLEMENTED
-    """
-    pass
+    rclient.publish(get_user_channel_name(user_id), pickle.dumps((lat, lng)))
 
 
 def subscribe_friends_update(rclient, user_id: str) -> threading.Thread:
-    """
-    TO BE IMPLEMENTED
-    """
-    pass
+    # define the handler for pubsub messages from other workers
+    # this handler runs in a different thread and put message into the msg_que
+    def handle_msg(msg):
+        nonlocal user_id
+        nonlocal rclient
+
+        friend_id = get_user_id_from_channel_name(msg['channel'])
+        location = pickle.loads(msg['data'])
+        notify_user_about_friend_location(rclient, user_id, friend_id, location[0], location[1])
+
+    # Register pubsub message handler for topics by other workers
+    channels_handler_map = {}
+    for friend_id in get_friends(user_id):
+        channel_name = get_user_channel_name(friend_id)
+        channels_handler_map[channel_name] = handle_msg
+
+    p = rclient.pubsub()
+    p.subscribe(**channels_handler_map)
+    thread = p.run_in_thread(sleep_time=0.1)
+
+    logging.info(f'subscribed channels: {channels_handler_map.keys()} for {user_id}')
+
+    return thread
 
 
 if __name__ == "__main__":

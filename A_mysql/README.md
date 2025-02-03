@@ -24,7 +24,7 @@ Assume you are designing a coupon system for Doordash or Uber Eats.
 - The users can browse promotions, and sign up for the promotions. The sign-up gives coupons to users. A user can sign up once for one promotion;
 - A user can browse her/his available coupons.
 
-Sample solution: [challenge_coupons.py](./challenge_coupons.py)
+Coding template: [challenge_coupons.py](./challenge_coupons.py), and you only need to implement specific functions; you can find my solution at [solutions/challenge_coupons.py](./solutions/challenge_coupons.py)
 
 Before starting, please read the [How to Use section](#how-to-use), and the [Python SQL client documentation section](#python-sql-client-documentation).
 

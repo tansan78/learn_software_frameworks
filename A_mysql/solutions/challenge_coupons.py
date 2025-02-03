@@ -106,38 +106,90 @@ def main():
 
 
 def user_sign_up_promo(conn, process_id: int, user_id: str, promo_id: str=RPOMO_ID):
+    decrement_coupons = f"""
+        UPDATE `{DB_NAME}`.`{RROMO_TABLE}` SET left_coupons = left_coupons - 1
+        WHERE promo_id = %(promo_id)s ;
     """
-    TO BE IMPLEMENTED
+    add_user_coupon = f"""
+        INSERT `{DB_NAME}`.`{USER_COUPON_TABLE}` (user_id, promo_id, process_id)
+        SELECT %(user_id)s, %(promo_id)s, {process_id}
+        FROM `{DB_NAME}`.`{RROMO_TABLE}`
+        WHERE left_coupons >= 0 ;
     """
-    pass
+
+    with conn.cursor() as cursor:
+        cursor.execute(decrement_coupons, {'promo_id': RPOMO_ID, 'user_id': user_id})
+        try:
+            cursor.execute(add_user_coupon, {'promo_id': RPOMO_ID, 'user_id': user_id})
+            conn.commit()
+        except pymysql.err.IntegrityError as e:
+            conn.rollback()
+            logging.warning(f'Process {process_id}: Duplicated user found: {user_id}')
 
 
 def create_tables_truncate(conn):
-    """
-    TO BE IMPLEMENTED
-    """
-    pass
+    with conn.cursor() as cursor:
+        cursor.execute(f"""
+            CREATE TABLE IF NOT EXISTS `{DB_NAME}`.`{RROMO_TABLE}` (
+                `promo_id` VARCHAR(10) PRIMARY KEY,
+                `restaurant_id` VARCHAR(10),
+                `total_coupons` INT,
+                `left_coupons` INT
+            );
+        """)
+        cursor.execute(f"""
+            CREATE TABLE IF NOT EXISTS `{DB_NAME}`.`{USER_COUPON_TABLE}` (
+                `user_id` VARCHAR(10),
+                `promo_id` VARCHAR(10),
+                `process_id` INT,
+                `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (user_id, promo_id)
+            );
+        """)
+        cursor.execute(f'truncate `{DB_NAME}`.`{USER_COUPON_TABLE}`;')
+        conn.commit()
+    
+    logging.info('Tables created and truncated')
 
 
 def create_promotion(conn, promo_id=RPOMO_ID, total_allowed_coupon=200):
+    insert_record = f"""
+        INSERT INTO {DB_NAME}.{RROMO_TABLE} (promo_id, restaurant_id, total_coupons, left_coupons)
+        VALUES (%(promo_id)s, %(restaurant_id)s, %(total_coupons)s, %(left_coupons)s)
+        ON DUPLICATE KEY UPDATE left_coupons = %(left_coupons)s
     """
-    TO BE IMPLEMENTED
-    """
-    pass
+
+    with conn.cursor() as cursor:
+        cursor.execute(insert_record,
+            {'promo_id': promo_id, 'restaurant_id': '67890',
+             'total_coupons': total_allowed_coupon, 'left_coupons': total_allowed_coupon})
+        conn.commit()
+    logging.info(f'Created **** 200 **** coupons in the database')
 
 
 def get_left_coupons(conn, promo_id=RPOMO_ID):
-    """
-    TO BE IMPLEMENTED
-    """
-    pass
+    with conn.cursor() as cursor:
+        fetch_left_coupons = f"""
+            SELECT left_coupons from `{DB_NAME}`.`{RROMO_TABLE}`
+            WHERE promo_id = %(promo_id)s;
+        """
+        cursor.execute(fetch_left_coupons, {'promo_id': promo_id})
+        left_coupon = cursor.fetchone()['left_coupons']
+    
+    return left_coupon
 
 
 def get_user_coupon_num(conn, promo_id=RPOMO_ID):
-    """
-    TO BE IMPLEMENTED
-    """
-    pass
+    with conn.cursor() as cursor:
+        get_user_record = f"""
+            SELECT count(*) as cnt from `{DB_NAME}`.`{USER_COUPON_TABLE}`
+            WHERE promo_id = %(promo_id)s;
+        """
+
+        cursor.execute(get_user_record, {'promo_id': promo_id})
+        num_user_coupons = cursor.fetchone()['cnt']
+    
+    return num_user_coupons
 
 
 if __name__ == "__main__":

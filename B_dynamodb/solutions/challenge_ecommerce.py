@@ -1,9 +1,3 @@
-"""
-implement ths following functions:
-- batch_write_table()
-- get_customer_orders()
-"""
-
 from typing import Optional
 import os 
 import logging
@@ -97,25 +91,70 @@ def get_table():
 
 
 def batch_write_table():
-    """
-    TO BE IMPLEMENTED
-    """
     df = pd.read_csv(CSV_FILE_LOCATION)
     
+    # selected_df = df.sample(n=100)
+    added_order_id = set()
     with get_table().batch_writer() as writer:
         for _, row in df.iterrows():
-            ### CODE HERE; and access content like row['customer_id'], row.get('order_id', '')
-            ### row.get('product_name', ''), row.get('order_date', '')
-            pass
+            if row.get('order_id', '') not in added_order_id:
+                writer.put_item(Item=create_order_item(
+                    customer_id=row['customer_id'],
+                    order_id=row.get('order_id', ''),
+                    product_name=row.get('product_name', ''),
+                    order_date=row.get('order_date', '')
+                ))
+                added_order_id.add(row.get('order_id', ''))
+
+    logging.info(f'Completed writing records; total record: {df.shape[0]}; written orders: {len(added_order_id)}')
+
+
+def create_order_item(customer_id, order_id, product_name, order_date):
+    try:
+        parsed_order_date = parser.parse(order_date)
+        order_date_formatted_str = parsed_order_date.strftime("%Y-%m-%d")
+    except parser.ParserError as e:
+        logging.warning(f'Invalid order_date string "{order_date}" for order {order_id}')
+        return None
+
+    order_date_plus_order_id = f'order_{order_date_formatted_str}_{order_id}'
+    return {
+        'customer_id': customer_id,
+        'order_id': order_id,
+        'order_date_plus_order_id': order_date_plus_order_id,
+        'product_name': product_name,
+        'order_date': order_date
+    }
 
 
 def get_customer_orders(customer_id: str,
                         product_name_substr: Optional[str] =None,
                         start_date: Optional[datetime] = None,
                         end_date: Optional[datetime] = None):
-    """
-    TO BE IMPLEMENTED
-    """
+    from boto3.dynamodb.conditions import Key, Attr
+
+    KeyConditionExpression = Key("customer_id").eq(customer_id)
+
+    # construct range date date filtering on sort key
+    start_date_str = start_date.strftime("%Y-%m-%d") if start_date else None
+    end_date_str = end_date.strftime("%Y-%m-%d") if end_date else None
+    if start_date_str and end_date_str:
+        KeyConditionExpression = KeyConditionExpression & \
+            Key("order_date_plus_order_id").between(f'order_{start_date_str}', f'order_{end_date_str}')
+    elif start_date_str:
+        KeyConditionExpression = KeyConditionExpression & Key("order_date_plus_order_id").gte(f'order_{start_date_str}')
+    elif end_date_str:
+        KeyConditionExpression = KeyConditionExpression & Key("order_date_plus_order_id").lte(f'order_{end_date_str}')
+
+    result = get_table().query(
+        KeyConditionExpression=KeyConditionExpression,
+        FilterExpression=Attr("product_name").contains(product_name_substr if product_name_substr else ''),
+        ProjectionExpression='order_date_plus_order_id, product_name, order_date',
+    )
+    
+    for order in result['Items']:
+        logging.info(f' - order: {order}')
+    logging.info('\n')
 
 
 if __name__ == "__main__":

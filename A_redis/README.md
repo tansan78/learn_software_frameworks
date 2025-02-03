@@ -47,12 +47,15 @@ Before starting, please read the [How to Use section](#how-ti-use) and [Redis Cl
 Design a system to track the locations of friends in real-time (the latency of <1 second)
 
 In the big-scale system, we also need to use geo indexing (check the geohash chapter). Here we just want to pratice the use of PubSub. So, let us assume we only track nearby friends for a small city.
+
+Coding template: [challenge_nearby_friends.py](./challenge_nearby_friends.py), and you only need to implement specific functions; my solution is at [solutions/challenge_nearby_friends.py](./solutions/challenge_nearby_friends.py)
   
 ### Leader Boards for an online game
 A leaderboard is a dynamic ranking system that tracks and displays the performance of players in real time. It updates scores frequently and efficiently retrieves the top performers or a specific player's rank, ensuring minimal latency. Required operations:
 - get the top 10 players
 - get the rank of a specific user
 
+Coding template: [challenge_leaderboard.py](./challenge_leaderboard.py), and you only need to implement specific functions; my solution is at [solutions/challenge_leaderboard.py](./solutions/challenge_leaderboard.py)
 
 ## How to Use?
 

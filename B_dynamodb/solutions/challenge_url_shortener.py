@@ -1,10 +1,3 @@
-"""
-Implement the following functions:
-- encode_n_save_url()
-- look_up_short_url()
-- look_up_long_url()
-"""
-
 from typing import Optional
 import os
 import logging
@@ -130,24 +123,51 @@ def create_tables():
 
 
 def encode_n_save_url(full_url: str) -> str:
-    """
-    TO BE IMPLEMENTED
-    """
-    pass
+    # Look up to check whether the full URL has been encoded before
+    short_url = look_up_long_url(full_url)
+    if short_url:
+        return short_url
+
+    # Look for a unused short URL
+    encoded_short_url = None
+    for i in range(5):
+        rand_int = random.randint(0, 1000_0000_000)
+        number_bytes = rand_int.to_bytes(8, 'big')
+        encoded_short_url = base64.b64encode(number_bytes).decode('utf-8')
+
+        stored_full_url = look_up_short_url(encoded_short_url)
+        if not stored_full_url:
+            break
+        else:
+            encoded_short_url = None
+
+    if not encoded_short_url:
+        logging.info('Unable to find a new available short URL')
+        return None
+    
+    short_to_full_table_obj.put_item(Item={'short_url': encoded_short_url, 'full_url': full_url})
+    full_to_short_table_obj.put_item(Item={'full_url': full_url, 'short_url': encoded_short_url})
+    return encoded_short_url
 
 
 def look_up_short_url(short_url: str) -> Optional[str]:
-    """
-    TO BE IMPLEMENTED
-    """
-    pass
+    short_to_full_table_obj = ddb.Table(SHORT_TO_FULL_TABLE_NAME)
+    resp = short_to_full_table_obj.get_item(Key={'short_url': short_url})
+
+    if 'Item' not in resp:
+        return None
+    
+    return resp['Item']['full_url']
 
 
 def look_up_long_url(full_url: str) -> Optional[str]:
-    """
-    TO BE IMPLEMENTED
-    """
-    pass
+    # Ideally we should normalize URL before lookup; however, to keep things simple, skip normalization
+    full_to_short_table_obj = ddb.Table(FULL_TO_SHORT_TABLE_NAME)
+    resp = full_to_short_table_obj.get_item(Key={'full_url': full_url})
+
+    if 'Item' not in resp:
+        return None
+    return resp['Item']['short_url']
 
 
 if __name__ == "__main__":

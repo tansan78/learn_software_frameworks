@@ -111,24 +111,17 @@ def main():
 
 
 def receive_user_new_score(rclient, user_id: int, score: int):
-    """
-    TO BE IMPLEMENTED
-    """
-    pass
+    rclient.zadd(LEADERBOARD_KEY, {user_id: score})
 
 
 def get_top_players(rclient, top_n=3) -> Dict[int, int]:
-    """
-    TO BE IMPLEMENTED
-    """
-    pass
+    raw_uids = rclient.zrevrange(LEADERBOARD_KEY, 0, top_n)
+    uids = [int(id_str) for id_str in raw_uids]
+    return uids
 
 
 def get_user_rank(rclient, user_id: int):
-    """
-    TO BE IMPLEMENTED
-    """
-    pass
+    return rclient.zrevrank(LEADERBOARD_KEY, user_id)
 
 
 if __name__ == "__main__":
