@@ -1,5 +1,5 @@
 
-
+from typing import Tuple, List
 import sys
 import logging
 import time
@@ -26,21 +26,9 @@ def worker_process(process_id):
     '''
     zk = KazooClient(hosts='127.0.0.1:2181')
     zk.start()
-
     zk.ensure_path(RING_PATH)
 
-    # Compute the hash value with positive value
-    hashed_process_id = hash(f'{process_id}') % ((sys.maxsize + 1) * 2)
-    hashed_process_id_mod = hashed_process_id % RING_LENG
-
-    # create an emphemral node in zooker
-    try:
-        zk.create(f'{RING_PATH}/{hashed_process_id_mod}',
-                  value=f'{process_id}'.encode("utf-8"),
-                  ephemeral=True)
-    except ke.NodeExistsError as e:
-        logging.warning(f'Hash collision; might be caused duplicated processed id {process_id}; quitting...')
-        return
+    register_node(zk, process_id)
 
     # Loop to keep the existing of it emphemral node
     while True:
@@ -56,30 +44,12 @@ def main():
         processes[i] = Process(target=worker_process, args=(i,))
         processes[i].start()
     
-
     zk = KazooClient(hosts='127.0.0.1:2181')
     zk.start()
     zk.ensure_path(RING_PATH)
     
-    # define a function to get the status of the ring of consistent hashing
-    def print_status():
-        # get the available node; `include_data` seems not working
-        logging.info('MAIN: Status of zookeeper membership: ')
-        worker_nodes, _ = zk.get_children(RING_PATH, include_data=True)
-        worker_nodes = sorted(worker_nodes)
-        for i in range(len(worker_nodes)):
-            enode = worker_nodes[i]
-            prev_enode = worker_nodes[i-1] if i > 0 else worker_nodes[-1]
-            data, _ = zk.get(f'{RING_PATH}/{enode}')
-            data = data.decode("utf-8")
-            logging.info(f'MAIN: -- worker process {data} is responsible for range from {prev_enode} to {enode}')
-    
-    
     logging.info('MAIN: Starting loop...')
     while True:
-        time.sleep(SLEEPING_INTERVAL)
-        logging.info(f'MAIN: main process is alive')
-
         r = random.random()
         if r < 0.33:
             if len(processes) <= 2:
@@ -89,7 +59,7 @@ def main():
             p = random.choice(list(processes.keys()))
             logging.info(f'MAIN: decided to KILL process {p}')
             processes[p].kill()
-            processes[p].join(timeout=5)
+            processes[p].join(timeout=10)
             processes[p].close()
             del processes[p]
             logging.info(f'MAIN: killed process {p}')
@@ -111,8 +81,51 @@ def main():
         else:
             logging.info('MAIN: decided do NOTHING')
 
+        time.sleep(SLEEPING_INTERVAL)
+        logging.info(f'MAIN: main process is alive with processes: {processes.keys()}')
+
         # print the status of the consistent hash
-        print_status()
+        ring_ranges, ring_processes = get_hash_ring(zk)
+        logging.info(f'MAIN: hash ring status: {ring_ranges}, {ring_processes}')
+
+        if set(ring_processes) != set(processes.keys()):
+            logging.error(f'[NOT CRITICAL] The ring processes ({ring_processes}) do not match" +\
+                          f" factual processes ({processes.keys()}); this might be caused by Zookeeper delays')
+        
+
+def register_node(zk, process_id):
+    # Compute the hash value with positive value
+    hashed_process_id = hash(f'{process_id}') % ((sys.maxsize + 1) * 2)
+    hashed_process_id_mod = hashed_process_id % RING_LENG
+
+    # create an emphemral node in zooker
+    zk.create(f'{RING_PATH}/{hashed_process_id_mod}',
+              value=f'{process_id}'.encode("utf-8"),
+              ephemeral=True)
+
+
+def get_hash_ring(zk) -> Tuple[List, List]:
+    """
+    Return two lists:
+    - the first list contains the range ending point of the hash ring
+    - the second list contains the corresponding process id
+    """
+    # get the available node; `include_data` seems not working
+    ranges = []
+    process = []
+
+    worker_nodes, _ = zk.get_children(RING_PATH, include_data=True)
+    worker_nodes = sorted(worker_nodes)
+    for i in range(len(worker_nodes)):
+        enode = worker_nodes[i]
+
+        data, _ = zk.get(f'{RING_PATH}/{enode}')
+        process_id = int(data.decode("utf-8"))
+
+        ranges.append(enode)
+        process.append(process_id)
+
+    return (ranges, process)
 
 
 if __name__ == "__main__":

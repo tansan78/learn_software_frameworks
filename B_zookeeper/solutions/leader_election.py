@@ -1,13 +1,11 @@
 
 
-import sys
 import logging
 import time
 import random 
 
 from multiprocessing import Process
 
-import kazoo
 import kazoo.client as kc
 import kazoo.exceptions as ke
 
