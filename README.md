@@ -1,6 +1,8 @@
-# run_software_stacks_local
+# Learn Software Frameworks For System Design
 
-As large language models mature, traditional coding challenges (like those on LeetCode) are becoming less critical for evaluating software engineers. Consequently, companies are shifting their focus—and rightly so—toward system design. This repository is designed to help engineering candidates deepen their understanding of various software frameworks by coding challenges, and also to enable companies to more effectively assess potential hires.
+As large language models mature, traditional coding challenges (like those on LeetCode) are becoming less critical for evaluating software engineers. Consequently, companies are shifting their focus—and rightly so—toward system design. 
+
+This repository is designed to help engineering candidates deepen their understanding of various software frameworks by coding challenges. On the other hand, this repository also enables companies to more effectively assess potential hires.
 
 Key features include:
 - **Local Environment Setup**: Run common databases or software frameworks directly on your computer, which saves your trouble for cloud setup;
