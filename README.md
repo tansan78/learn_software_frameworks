@@ -1,8 +1,10 @@
 # Learn Software Frameworks For System Design
 
-As large language models mature, traditional coding challenges (like those on LeetCode) are becoming less critical for evaluating software engineers. Consequently, companies are shifting their focus—and rightly so—toward system design. 
+In system design interviews, you confidently discuss sophisticated frameworks like ZooKeeper and Redis to justify your architectural choices. But in reality, how often do you actually work with these tools in your day-to-day job? If you rarely interact with them, can you truly say you're confident and comfortable using them when it matters most?
 
-This repository is designed to help engineering candidates deepen their understanding of various software frameworks by coding challenges. On the other hand, this repository also enables companies to more effectively assess potential hires.
+![image](./interview_vs_actual_work.png)
+
+**This repository is designed to help engineering candidates deepen their understanding of various software frameworks by coding challenges.** On the other hand, this repository also enables companies to more effectively assess potential hires.
 
 Key features include:
 - **Local Environment Setup**: Run common databases or software frameworks directly on your computer, which saves your trouble for cloud setup;
