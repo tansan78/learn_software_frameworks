@@ -33,7 +33,7 @@ $ python3 challenge_consistent_hashing.py
 ```
 
 ## Client API
-The code uses [Kazoo](https://kazoo.readthedocs.io/en/latest/index.html#) which is a Python client for ZooKeeper.
+The code uses [Kazoo](https://kazoo.readthedocs.io/en/latest/basic_usage.html) which is a Python client for ZooKeeper.
 
 Some important concepts from [Zookeeper Overview](https://zookeeper.apache.org/doc/current/zookeeperOver.html):
 
