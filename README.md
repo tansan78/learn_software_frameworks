@@ -14,6 +14,8 @@ Key features include:
 
 Each directory has a README to instruct for the setup and the code challenges.
 
+**You will need Docker installed** before you start.
+
 
 ## Organize Learnings by Levels
 - **level A**: you will need all the time;
