@@ -2,7 +2,9 @@
 
 In system design interviews, you confidently discuss sophisticated frameworks like ZooKeeper and Redis to justify your architectural choices. But in reality, how often do you actually work with these tools in your day-to-day job? If you rarely interact with them, can you truly say you're confident and comfortable using them when it matters most?
 
-![image](./interview_vs_actual_work.png)
+<div align='center'>
+<img src="interview_vs_actual_work.png" alt="interview_vs_actual_work" width="200"/>
+</div>
 
 **This repository is designed to help engineering candidates deepen their understanding of various software frameworks by coding challenges.** On the other hand, this repository also enables companies to more effectively assess potential hires.
 
@@ -28,8 +30,10 @@ Each directory has a README to instruct for the setup and the code challenges.
   - [D_rabbitmq](./D_rabbitmq/README.md)
 
 
-## Your Contribution is welcome!
-I spent some time to build this; but this is far from complete. Therefore, your contribution is welcome!
+## In Progress
+This repository is still under construction.
+
+Your contribution and feedback are welcome!
 
 Feel free to create PRs and tag me for review!
 
