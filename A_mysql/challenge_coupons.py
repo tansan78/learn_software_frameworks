@@ -8,7 +8,7 @@ You need to implement the following functions:
 - create promotion with a specified number of allowed coupons: create_promotion()
 - sign up a promotion (substracting number of left coupons from promotion and adding records for users): user_sign_up_promo()
 - get the number of left coupons for a promotion: get_left_coupons()
-- get all the available coupons for a user: get_user_coupon_num()
+- get all the coupons signed up by users: get_user_coupon_num()
 
 Please handle possible race conditions!
 '''
@@ -105,13 +105,6 @@ def main():
     logging.info(f'MAIN: Exiting')
 
 
-def user_sign_up_promo(conn, process_id: int, user_id: str, promo_id: str=RPOMO_ID):
-    """
-    TO BE IMPLEMENTED
-    """
-    pass
-
-
 def create_tables_truncate(conn):
     """
     TO BE IMPLEMENTED
@@ -120,6 +113,13 @@ def create_tables_truncate(conn):
 
 
 def create_promotion(conn, promo_id=RPOMO_ID, total_allowed_coupon=200):
+    """
+    TO BE IMPLEMENTED
+    """
+    pass
+
+
+def user_sign_up_promo(conn, process_id: int, user_id: str, promo_id: str=RPOMO_ID):
     """
     TO BE IMPLEMENTED
     """
