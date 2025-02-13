@@ -105,3 +105,32 @@ with conn.cursor() as cursor:
 
 - **Impact of LIKE Clauses**: The use of the LIKE clause, particularly with wildcards at the beginning of the search term, can disable the effectiveness of indexes. Some databases might still use the index if the wildcard is at the end (a prefix search), but generally, pattern matching can hinder index utilization.
 
+### [Optional] Transaction vs Locking
+
+By default:
+- transaction enforces atomicity of different operations from the same client; all the operations are either committed together or rolled back together. It does not prevent other clients from making change in between
+- locking enforces exclusive access of the same record. It is used to prevent the concurrent access of the same record from different clients.
+
+However, by default, the transaction in MySQL enforces the row locking: it locks all the rows the SQL selects. However, it does not lock the whole table, and without table lock, phantom read is possible.
+- what is phantom read? A phantom read occurs when a transaction reads a set of rows, but when it re-reads the same query later within the same transaction, new rows unexpectedly appear (or disappear) due to another transaction inserting or deleting data.
+
+To given concrete examples, 
+
+- case 1: in the following code, no other clients can change the account for id 1 and the account for id 2.
+```
+START TRANSACTION;  -- Begin a new transaction
+UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+COMMIT; 
+```
+- case 2, in the following code, the two statements may return different values because of phantom reads.
+```
+START TRANSACTION;  -- Begin a new transaction
+SELECT count(*) from accounts WHERE balance > 1000;
+SELECT count(*) from accounts WHERE balance > 1000;
+COMMIT; 
+```
+
+Here is more explanation: [MySQL isolation levels and how they work](https://planetscale.com/blog/mysql-isolation-levels-and-how-they-work)
+
+![Transaction Isolation Levels and Locking](./isolation_levels.png)
