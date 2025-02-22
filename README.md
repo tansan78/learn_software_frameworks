@@ -14,6 +14,8 @@ Key features include:
 
 Each directory has a README to instruct for the setup and the code challenges.
 
+**You will need Docker installed** before you start.
+
 
 ## Organize Learnings by Levels
 - **level A**: you will need all the time;
@@ -24,7 +26,7 @@ Each directory has a README to instruct for the setup and the code challenges.
   - [B_dynamodb](./B_dynamodb/README.md)
   - [B_zookeeper](./B_zookeeper/README.md)
 - **level C**: you will need in some challenging system designs;
-  - [C_elasticsearch]](./C_elasticsearch/README.md)
+  - [C_elasticsearch](./C_elasticsearch/README.md)
   - [C_kafka](./C_kafka/README.md)
 - **level D**: you only need if you are specialized in related domains
   - [D_rabbitmq](./D_rabbitmq/README.md)
