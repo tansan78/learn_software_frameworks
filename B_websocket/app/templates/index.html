@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>WebSocket Test</h1>
+
+<div class="container">
+    <h2>Type your name to join chat room</h2>
+    <form id="register">
+        <div class="input-group mb-3">
+            <input id="username", type="text" class="form-control" placeholder="your name" name="query">
+            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Join</button>
+        </div>
+    </form>
+</div>
+
+
+<div class="container">
+    <h2>Send your message to chat room</h2>
+    <form id="input">
+        <div class="input-group mb-3">
+            <input id="msg", type="text" class="form-control" placeholder="Your message" name="query">
+            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Send</button>
+        </div>
+    </form>
+    <div id="log" class="centred"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+<script type="text/javascript" charset="utf-8">
+    const log = (text, color) => {
+      document.getElementById('log').innerHTML += `<span style="color: ${color}">${text}</span><br>`;
+    };
+
+    var socket = io.connect(location.host);
+    // const socket = new WebSocket('ws://' + location.host + '/echo');
+    socket.on('message', ev => {
+      log('Bot: ' + ev, 'blue');
+    });
+
+    document.getElementById('register').onsubmit = ev => {
+      ev.preventDefault();
+      const textField = document.getElementById('username');
+      
+      socket.emit('join', {'username': textField.value});
+      console.log('send registration with username: ' + textField.value)
+    };
+
+    document.getElementById('input').onsubmit = ev => {
+      ev.preventDefault();
+      const textField = document.getElementById('msg');
+      // log('User: ' + textField.value, 'red');
+
+      socket.emit('echo', textField.value);
+      console.log('send message ' + textField.value)
+      textField.value = '';
+    };
+</script>
+
+</body>
+</html>
