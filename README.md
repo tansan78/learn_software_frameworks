@@ -30,6 +30,7 @@ Each directory has a README to instruct for the setup and the code challenges.
   - [C_elasticsearch](./C_elasticsearch/README.md)
   - [C_kafka](./C_kafka/README.md)
 - **level D**: you only need if you are specialized in related domains
+  - [D_encryption](./D_encryption/README.md) 
   - [D_rabbitmq](./D_rabbitmq/README.md)
 
 
