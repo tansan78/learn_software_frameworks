@@ -1,6 +1,6 @@
 
 ## WebSocket Introduction
-
+WebSocket is a full-duplex communication protocol that enables real-time, bidirectional data exchange between a client and a server over a single, persistent TCP connection. Unlike HTTP, WebSocket eliminates the need for repeated request-response cycles, reducing latency and overhead. It is commonly used for live data streaming, chat applications, online gaming, and other interactive web applications.
 
 
 ## Challenge

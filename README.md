@@ -24,6 +24,7 @@ Each directory has a README to instruct for the setup and the code challenges.
   - [A_redis](./A_redis/README.md)
 - **level B**: you will need in most system designs;
   - [B_dynamodb](./B_dynamodb/README.md)
+  - [B_websocket](./B_websocket/README.md)
   - [B_zookeeper](./B_zookeeper/README.md)
 - **level C**: you will need in some challenging system designs;
   - [C_elasticsearch](./C_elasticsearch/README.md)
